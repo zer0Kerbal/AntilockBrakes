@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace AntiLockBrakes
 {
@@ -6,6 +7,9 @@ namespace AntiLockBrakes
     {
         float timesince = 0;
         Boolean running = false;
+        String currentText = "0.1";
+        double currentRate = 0.1;
+        protected Rect windowPos;
 
         [KSPField(isPersistant = false)]
         public float PowerConsumption;
@@ -20,6 +24,10 @@ namespace AntiLockBrakes
         public override void OnStart(StartState state)
         {
             print("ABS: Hello Kerbin!");
+            if ((windowPos.x == 0) && (windowPos.y == 0))
+            {
+                windowPos = new Rect(Screen.width / 2, Screen.height / 2, 10, 10);
+            }
         }
 
         public override void OnUpdate()
@@ -30,7 +38,7 @@ namespace AntiLockBrakes
                 {
                     timesince += TimeWarp.deltaTime;
                     print("ABS: " + timesince.ToString());
-                    if (timesince >= .1)
+                    if (timesince >= currentRate)
                     {
                         vessel.ActionGroups.ToggleGroup(KSPActionGroup.Brakes);
                         print("ABS: Toggle Brakes");
@@ -75,6 +83,52 @@ namespace AntiLockBrakes
             running = false;
             Events["Activate"].active = true;
             Events["Deactivate"].active = false;
+        }
+        [KSPEvent(guiActive=true, guiName="Edit ABS Settings")]
+        private void openGUI()
+        {
+            RenderingManager.AddToPostDrawQueue(3, new Callback(drawGUI));
+        }
+
+        private void WindowGUI(int windowID)
+        {
+            GUIStyle sty = new GUIStyle(GUI.skin.button);
+            GUIStyle sty2 = new GUIStyle(GUI.skin.textField);
+
+            sty.normal.textColor = sty.focused.textColor = Color.white;
+            sty.hover.textColor = sty.active.textColor = Color.yellow;
+            sty.onNormal.textColor = sty.onFocused.textColor = sty.onHover.textColor = sty.onActive.textColor = Color.green;
+            sty.padding = new RectOffset(8, 8, 8, 8);
+
+            if (!Double.TryParse(currentText, out currentRate))
+            {
+                currentRate = 0.1;
+            }
+
+            GUILayout.BeginVertical();
+                GUILayout.BeginHorizontal();
+                    GUILayout.Label("ABS Cycle Rate");
+                    currentText = GUILayout.TextField(currentText, GUILayout.MinWidth(30.0F));
+                    GUILayout.Label("s");
+                GUILayout.EndHorizontal();
+                if (GUILayout.Button("CLOSE", sty, GUILayout.ExpandWidth(true)))
+                {
+                    closeGUI();
+                }
+            GUILayout.EndVertical();
+
+            GUI.DragWindow();
+        }
+
+        private void drawGUI()
+        {
+            GUI.skin = HighLogic.Skin;
+            windowPos = GUILayout.Window(1, windowPos, WindowGUI, "ABS Options", GUILayout.MinWidth(100));
+        }
+
+        private void closeGUI()
+        {
+            RenderingManager.RemoveFromPostDrawQueue(3, new Callback(drawGUI));
         }
     }
 }
