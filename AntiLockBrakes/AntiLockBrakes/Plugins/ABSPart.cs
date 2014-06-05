@@ -17,7 +17,8 @@ namespace AntiLockBrakes
         public override string GetInfo()
         {
             string i = base.GetInfo();
-            i += "Power Consumption: " + PowerConsumption + "/s";
+            print(i);
+            i += "Power Consumption: " + PowerConsumption + "/sec";
             return i;
         }
 
@@ -26,7 +27,7 @@ namespace AntiLockBrakes
             print("ABS: Hello Kerbin!");
             if ((windowPos.x == 0) && (windowPos.y == 0))
             {
-                windowPos = new Rect(Screen.width / 2, Screen.height / 2, 10, 10);
+                windowPos = new Rect(Screen.width / 2, Screen.height / 2, 30, 10);
             }
         }
 
