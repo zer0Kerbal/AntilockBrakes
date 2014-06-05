@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Debug\AntiLockBrakes\Plugins\</OutputPath>
+    <OutputPath>bin\Debug\AntiLockBrakes\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -38,7 +38,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
@@ -46,8 +45,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ABSPart.cs" />
+    <Compile Include="Plugins\ABSPart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Parts\AntilockPart.blend" />
+    <None Include="Parts\AntilockPart.blend1" />
+    <None Include="Parts\AntilockPart.tga" />
+    <None Include="Parts\AntilockPart.xcf" />
+    <None Include="Parts\model.mu" />
+    <None Include="Parts\part.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Parts\AntilockPart.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
