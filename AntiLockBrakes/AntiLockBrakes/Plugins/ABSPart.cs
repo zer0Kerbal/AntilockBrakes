@@ -12,6 +12,12 @@ namespace AntiLockBrakes
         [KSPField(isPersistant = false)]
         public float PowerConsumption;
 
+        public override string GetInfo()
+        {
+            string i = base.GetInfo();
+            i += "Power Consumption: " + PowerConsumption + "/s";
+            return i;
+        }
 
         public override void OnStart(StartState state)
         {
