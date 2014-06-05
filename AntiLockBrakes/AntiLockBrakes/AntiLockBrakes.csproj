@@ -49,6 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Anti-lockBrakes.version" />
     <None Include="Parts\AntilockPart.blend" />
     <None Include="Parts\AntilockPart.blend1" />
     <None Include="Parts\AntilockPart.tga" />
