@@ -7,6 +7,7 @@ namespace AntiLockBrakes
     {
         float timesince = 0;
         Boolean running = false;
+        Boolean runUntilStop = false;
         String currentText = "0.1";
         double currentRate = 0.1;
         protected Rect windowPos;
@@ -33,7 +34,17 @@ namespace AntiLockBrakes
 
         public override void OnUpdate()
         {
-            if (running && !(vessel.GetSrfVelocity().magnitude <= 1))
+            if (GameSettings.BRAKES.GetKey() && GameSettings.MODIFIER_KEY.GetKey()) {
+                print("ABS KEYS DOWN");
+                running = true;
+            }
+            else if (!runUntilStop)
+            {
+                running = false;
+            }
+
+
+            if (running)
             {
                 if (GetPower(part, PowerConsumption))
                 {
@@ -48,7 +59,7 @@ namespace AntiLockBrakes
                 }
             }
 
-            if (running && vessel.GetSrfVelocity().magnitude <= 1)
+            if (runUntilStop && vessel.GetSrfVelocity().magnitude <= 1)
             {
                 Deactivate();
                 vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
@@ -68,20 +79,22 @@ namespace AntiLockBrakes
             }
         }
 
-        [KSPEvent(guiActive=true, guiName="Activate ABS")]
+        [KSPEvent(guiActive=true, guiName="Activate ABS Stop")]
         public void Activate()
         {
             print("ABS: ABS Started");
             running = true;
+            runUntilStop = true;
             Events["Activate"].active = false;
             Events["Deactivate"].active = true;
         }
 
-        [KSPEvent(guiActive=true, guiName="Deactivate ABS", active=false)]
+        [KSPEvent(guiActive=true, guiName="Deactivate ABS Stop", active=false)]
         public void Deactivate()
         {
             print("ABS: ABS Stopped");
             running = false;
+            runUntilStop = false;
             Events["Activate"].active = true;
             Events["Deactivate"].active = false;
         }
