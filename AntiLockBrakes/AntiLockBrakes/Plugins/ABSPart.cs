@@ -14,9 +14,14 @@ namespace AntiLockBrakes
         double currentRate = 0.1;
         protected Rect windowPos;
 
+        private float powerRatio;
+
 
         [KSPField(isPersistant = false)]
         public float PowerConsumption;
+
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Status")]
+        public string Status;
 
         public override string GetInfo()
         {
@@ -31,7 +36,17 @@ namespace AntiLockBrakes
             print("ABS: Hello Kerbin!");
             if ((windowPos.x == 0) && (windowPos.y == 0))
             {
-                windowPos = new Rect(Screen.width / 2, Screen.height / 2, 30, 10);
+                windowPos = new Rect(Screen.width / 2, Screen.height / 2, 50, 10);
+            }
+        }
+
+        public override void OnFixedUpdate()
+        {
+            if (running)
+            {
+                var energyRequest = PowerConsumption * TimeWarp.fixedDeltaTime;
+                var energyDrawn = part.RequestResource("ElectricCharge", energyRequest);
+                powerRatio = energyDrawn / energyRequest;
             }
         }
 
@@ -82,8 +97,9 @@ namespace AntiLockBrakes
 
             if (running)
             {
-                if (GetPower(part, PowerConsumption))
+                if (powerRatio > 0)
                 {
+                    Status = "Active";
                     timeSinceToggle += TimeWarp.deltaTime;
                     print("ABS: " + timeSinceToggle.ToString());
                     if (timeSinceToggle >= currentRate)
@@ -93,6 +109,13 @@ namespace AntiLockBrakes
                         timeSinceToggle = 0;
                     }
                 }
+                else {
+                    Status = "Out of Power!";
+                }
+            }
+            else
+            {
+                Status = "Idle";
             }
 
             if (runUntilStop && vessel.GetSrfVelocity().magnitude <= 1)
