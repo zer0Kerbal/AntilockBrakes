@@ -5,12 +5,15 @@ namespace AntiLockBrakes
 {
     public class ABSPart : PartModule
     {
-        float timesince = 0;
+        float timeSinceToggle = 0;
+        float timeSinceKeyDown = 0;
         Boolean running = false;
         Boolean runUntilStop = false;
+        Boolean keyDown = false;
         String currentText = "0.1";
         double currentRate = 0.1;
         protected Rect windowPos;
+
 
         [KSPField(isPersistant = false)]
         public float PowerConsumption;
@@ -34,6 +37,37 @@ namespace AntiLockBrakes
 
         public override void OnUpdate()
         {
+            if ((GameSettings.BRAKES.GetKeyDown() && GameSettings.MODIFIER_KEY.GetKeyDown()) || (GameSettings.BRAKES.GetKey() && GameSettings.MODIFIER_KEY.GetKeyDown()) || (GameSettings.BRAKES.GetKeyDown() && GameSettings.MODIFIER_KEY.GetKey()))
+            {
+                print("ABS KEYDOWN");
+                keyDown = true;
+                timeSinceKeyDown = 0;
+            }
+
+            if (keyDown)
+            {
+                timeSinceKeyDown += TimeWarp.deltaTime;
+            }
+
+            if ((GameSettings.BRAKES.GetKeyUp() || GameSettings.MODIFIER_KEY.GetKeyUp()) && keyDown)
+            {
+                print("ABS KEYUP");
+                keyDown = false;
+                if (timeSinceKeyDown <= 1)
+                {
+                    print("ABS PRESS");
+                    if (runUntilStop)
+                    {
+                        Deactivate();
+                    } else {
+                        Activate();
+
+                    }
+                }
+            }
+
+
+            
             if (GameSettings.BRAKES.GetKey() && GameSettings.MODIFIER_KEY.GetKey()) {
                 print("ABS KEYS DOWN");
                 running = true;
@@ -44,17 +78,19 @@ namespace AntiLockBrakes
             }
 
 
+
+
             if (running)
             {
                 if (GetPower(part, PowerConsumption))
                 {
-                    timesince += TimeWarp.deltaTime;
-                    print("ABS: " + timesince.ToString());
-                    if (timesince >= currentRate)
+                    timeSinceToggle += TimeWarp.deltaTime;
+                    print("ABS: " + timeSinceToggle.ToString());
+                    if (timeSinceToggle >= currentRate)
                     {
                         vessel.ActionGroups.ToggleGroup(KSPActionGroup.Brakes);
                         print("ABS: Toggle Brakes");
-                        timesince = 0;
+                        timeSinceToggle = 0;
                     }
                 }
             }
@@ -144,5 +180,7 @@ namespace AntiLockBrakes
         {
             RenderingManager.RemoveFromPostDrawQueue(3, new Callback(drawGUI));
         }
+
+        
     }
 }
