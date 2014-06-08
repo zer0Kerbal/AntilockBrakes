@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+//using Toolbar;
 
 namespace AntiLockBrakes
 {
@@ -14,6 +15,8 @@ namespace AntiLockBrakes
         double currentRate = 0.1;
         protected Rect windowPos;
 
+        //IButton btn;
+        
         private float powerRatio;
 
 
@@ -33,7 +36,11 @@ namespace AntiLockBrakes
 
         public override void OnStart(StartState state)
         {
+            
             print("ABS: Hello Kerbin!");
+            //btn = InitButton();
+            
+
             if ((windowPos.x == 0) && (windowPos.y == 0))
             {
                 windowPos = new Rect(Screen.width / 2, Screen.height / 2, 50, 10);
@@ -73,6 +80,7 @@ namespace AntiLockBrakes
                     print("ABS PRESS");
                     if (runUntilStop)
                     {
+                        print("ABS UNTOGGLE");
                         Deactivate();
                     } else {
                         Activate();
@@ -82,8 +90,9 @@ namespace AntiLockBrakes
             }
 
 
-            
-            if (GameSettings.BRAKES.GetKey() && GameSettings.MODIFIER_KEY.GetKey()) {
+
+            if (GameSettings.BRAKES.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
+            {
                 print("ABS KEYS DOWN");
                 running = true;
             }
@@ -120,6 +129,8 @@ namespace AntiLockBrakes
 
             if (runUntilStop && vessel.GetSrfVelocity().magnitude <= 1)
             {
+                print("ABS: TOO SLOW");
+                //print("ABS: SPEED: " + vessel.GetSrfVelocity().magnitude.ToString());
                 Deactivate();
                 vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
             }
@@ -146,6 +157,7 @@ namespace AntiLockBrakes
             runUntilStop = true;
             Events["Activate"].active = false;
             Events["Deactivate"].active = true;
+            //SetBarIcon(btn);
         }
 
         [KSPEvent(guiActive=true, guiName="Deactivate ABS Stop", active=false)]
@@ -156,6 +168,7 @@ namespace AntiLockBrakes
             runUntilStop = false;
             Events["Activate"].active = true;
             Events["Deactivate"].active = false;
+            //SetBarIcon(btn);
         }
         [KSPEvent(guiActive=true, guiName="Edit ABS Settings")]
         private void openGUI()
@@ -204,6 +217,53 @@ namespace AntiLockBrakes
             RenderingManager.RemoveFromPostDrawQueue(3, new Callback(drawGUI));
         }
 
-        
+        //private IButton InitButton()
+        //{
+        //    IButton ret;
+        //    try
+        //    {
+        //        print("ABS: TOOLBAR START");
+        //        ret = ToolbarManager.Instance.add("KSPABSPART", "toolbarBtnABS");
+        //        print("ABS: SET TOOLBAR ICON");
+        //        SetBarIcon(ret);
+        //        print("ABS: SET TOOLTIP");
+        //        ret.ToolTip = "Anti-Lock Brakes";
+        //        print("ABS: SET ONCLICK");
+        //        ret.OnClick += (e) =>
+        //        {
+        //            if (runUntilStop)
+        //            {
+        //                print("ABS STOP HIT");
+        //                Deactivate();
+        //            }
+        //            else
+        //            {
+        //                print("ABS START HIT");
+        //                Activate();
+        //            }
+
+        //        };
+        //        print("ABS: SET VISIBLE");
+        //        ret.Visible = true;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ret = null;
+        //        print("Error making ABS Button: " + ex.Message);
+        //    }
+        //    return ret;
+        //}
+
+        //private void SetBarIcon(IButton btn)
+        //{
+        //    if (runUntilStop)
+        //    {
+        //        btn.TexturePath = "AntiLockBrakes/Textures/ABSToolbarOn";
+        //    }
+        //    else {
+        //        btn.TexturePath = "AntiLockBrakes/Textures/ABSToolbarOff";
+        //    }
+        //}
     }
 }

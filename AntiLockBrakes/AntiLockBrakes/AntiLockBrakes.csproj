@@ -40,6 +40,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Toolbar">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\GameData\000_Toolbar\Toolbar.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -50,6 +53,7 @@
     <Compile Include="KSPPluginFramework\MonoBehaviourExtended.cs" />
     <Compile Include="KSPPluginFramework\MonoBehaviourWindow.cs" />
     <Compile Include="KSPPluginFramework\SkinsLibrary.cs" />
+    <Compile Include="KSPPluginFramework\ToolbarWrapper.cs" />
     <Compile Include="Plugins\ABSPart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
